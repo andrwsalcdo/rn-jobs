@@ -5,6 +5,8 @@ import { Button, Text } from 'native-base';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 class Slides extends React.Component {
+  scrollX = new Animated.Value(0);
+
   renderLastSlide(index) {
     if (index === this.props.data.length - 1) {
       return (
@@ -30,13 +32,20 @@ class Slides extends React.Component {
     ));
   }
 
-  renderProgressDots() {
+  renderProgressDots(position) {
     return this.props.data.map((_, i) => {
-      return <Animated.View key={i} style={[styles.dots]} />;
+      let opacity = position.interpolate({
+        inputRange: [i - 1, i, i + 1], // each dot will need to have an opacity of 1 when position is equal to their index (i)
+        outputRange: [0.3, 1, 0.3], // when position is not i, the opacity of the dot will animate to 0.3
+        extrapolate: 'clamp'
+      });
+      return <Animated.View key={i} style={[styles.dots, { opacity }]} />;
     });
   }
 
   render() {
+    // position will be a value between 0 and photos.length - 1 assuming you don't scroll pass the ends of the ScrollView
+    let position = Animated.divide(this.scrollX, SCREEN_WIDTH);
     return (
       <View style={styles.container}>
         <View style={{ width: SCREEN_WIDTH, height: SCREEN_WIDTH }}>
@@ -44,12 +53,16 @@ class Slides extends React.Component {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
+            onScroll={Animated.event([
+              { nativeEvent: { contentOffset: { x: this.scrollX } } }
+            ])}
+            scrollEventThrottle={16}
           >
             {this.renderSlides()}
           </ScrollView>
         </View>
         <View style={{ flexDirection: 'row' }}>
-          {this.renderProgressDots()}
+          {this.renderProgressDots(position)}
         </View>
       </View>
     );
