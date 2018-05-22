@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, Platform } from 'react-native';
 
 class ReviewScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -9,7 +9,10 @@ class ReviewScreen extends Component {
         title="Settings"
         onPress={() => navigation.navigate('settings')}
       />
-    )
+    ),
+    headerStyle: {
+      marginTop: Platform.OS === 'android' ? 24 : 0
+    }
   });
   render() {
     return (
