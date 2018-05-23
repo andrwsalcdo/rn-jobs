@@ -10,19 +10,26 @@ import DeckScreen from '../screens/DeckScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 
-export const MainNavigator = createBottomTabNavigator({
-  welcome: WelcomeScreen,
-  auth: AuthScreen,
-  main: {
-    screen: createBottomTabNavigator({
-      map: MapScreen,
-      deck: DeckScreen,
-      review: {
-        screen: createStackNavigator({
-          review: ReviewScreen,
-          settings: SettingsScreen
-        })
-      }
-    })
+export const MainNavigator = createBottomTabNavigator(
+  {
+    welcome: WelcomeScreen,
+    auth: AuthScreen,
+    main: {
+      screen: createBottomTabNavigator({
+        map: MapScreen,
+        deck: DeckScreen,
+        review: {
+          screen: createStackNavigator({
+            review: ReviewScreen,
+            settings: SettingsScreen
+          })
+        }
+      })
+    }
+  },
+  {
+    navigationOptions: {
+      tabBarVisible: false
+    }
   }
-});
+);
